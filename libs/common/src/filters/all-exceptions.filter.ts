@@ -3,6 +3,7 @@ import {
   Catch,
   ExceptionFilter,
   HttpException,
+  HttpStatus,
   Logger,
 } from '@nestjs/common';
 import { GqlArgumentsHost, GqlContextType } from '@nestjs/graphql';
@@ -45,13 +46,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
       if (exception instanceof HttpException) {
         logLever = LogLevel.WARN;
+        statusCode = exception.getStatus();
+
         const getResponse = exception.getResponse();
-        statusCode = this.hasStatusCode(getResponse)
-          ? getResponse.statusCode
-          : exception.getStatus();
         code = this.hasExceptionCode(getResponse)
           ? getResponse.code
           : exception.getStatus();
+
         message = exception.message;
         stack = exception.stack;
       } else if (exception instanceof Error) {
@@ -59,13 +60,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
         code = this.hasErrorCode(exception)
           ? exception.extensions.code
           : 'INTERNAL_SERVER_ERROR';
-        statusCode = 500;
+        statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         message = exception.message;
         stack = exception.stack;
       } else {
         logLever = LogLevel.ERROR;
         code = 'INTERNAL_SERVER_ERROR';
-        statusCode = 500;
+        statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
         message = 'Internal server error occurred';
         stack = this.hasStack(exception) ? exception.stack : undefined;
       }
