@@ -10,6 +10,7 @@ export class CustomException extends HttpException {
       {
         message,
         code,
+        statusCode,
       },
       statusCode,
     );
