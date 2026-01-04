@@ -8,6 +8,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { AppResolver } from './app.resolver';
 import { MongooseConfigService } from '@app/common/configs/mongoose.config';
 import { GqlConfigService } from '@app/common/configs/graphql.config';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GqlConfigService } from '@app/common/configs/graphql.config';
       imports: [ConfigModule],
       useClass: GqlConfigService,
     }),
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, AppResolver],
